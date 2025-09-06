@@ -11,8 +11,8 @@ public class GestorPedidos {
         this.menu = new ArrayList<>();
         this.pedidos = new ArrayList<>();
         //Agregamos unas pizzas al menu
-        menu.add(new Pizza("Napo", "Grande", 9000, List.of("Muzza", "Tomate", "Pesto")));
-        menu.add(new Pizza("Muzza", "Grande", 7500, List.of("Muzza", "oregano", "oliva")));
+        menu.add(new Pizza("Napolitana", "Grande", 9000, List.of("Muzza", "Tomate", "Pesto")));
+        menu.add(new Pizza("Muzzarella", "Grande", 7500, List.of("Muzza", "oregano", "oliva")));
 
     }
 
@@ -42,16 +42,21 @@ public class GestorPedidos {
         menu.add(nuevaPizza);
         System.out.println("✅ Pizza agregada al menú: " + nuevaPizza);
         pausar();
+        limpiar();
     }
 
     public void registrarPedido(Pedido p) {  }
+
     public void guardarPedidosEnArchivo() {  }
+    //Mostrar todos los pedidos
     public void mostrarHistorial() {
+        limpiar();
         for (int i = 0; i < this.pedidos.size(); i++) {
             System.out.println((i + 1) + ". " + this.pedidos.get(i));
         }
+        pausar();
     }
-
+    //Muestra el menu de pizzas
     public void mostrarMenu() {
         limpiar();
         for (int i = 0; i < menu.size(); i++) {
@@ -60,11 +65,10 @@ public class GestorPedidos {
 
 
     }
-
+    //Carga un pedido
     public void tomarPedidoDesdeConsola(Scanner scanner) {
         limpiar();
-        String nombre;
-        String telefono;
+        String nombre, telefono,direccion;
         List<Pizza> pizzasPedidas;
         double total = 0;
         boolean continuarPedido = true;
@@ -73,17 +77,19 @@ public class GestorPedidos {
         nombre = scanner.nextLine();
         System.out.println("Telefono");
         telefono = scanner.nextLine();
+        System.out.println("Direccion");
+        direccion = scanner.nextLine();
 
-        Cliente cliente = new Cliente(nombre,telefono);
+
+        Cliente cliente = new Cliente(nombre,telefono,direccion);
         pizzasPedidas = new ArrayList<>();
 
-        System.out.println("A continuacion mostraremos el menu, cua");
+        System.out.println("A continuacion mostraremos el menu");
 
         while(continuarPedido){
-
             mostrarMenu();
             System.out.println("---------------------------------------------------------");
-            System.out.println("Selecciona cual pizza (1,2..)");
+            System.out.println("Seleccionar opcion");
             int eleccion = scanner.nextInt()-1;
             pizzasPedidas.add(menu.get(eleccion));
             total = total + menu.get(eleccion).getPrecio();
@@ -91,9 +97,9 @@ public class GestorPedidos {
             verPedido(pizzasPedidas,total,"Pedido Parcial");
             System.out.println("---------------------------------------------------------");
             System.out.println("Seleccione como continuar");
-            System.out.println("1.Cerrar Pedido\n2.Agregar Pizza\n");
+            System.out.println("1.Agregar\n2.Cerrar Pedido\n");
             int rta = scanner.nextInt();
-            if(rta == 1 ){
+            if(rta == 2 ){
                 continuarPedido=false;
                 System.out.println("---------------------------------------------------------");
             }
@@ -107,7 +113,7 @@ public class GestorPedidos {
 
 
     }
-
+    //Metodo para ver el pedido
     public void verPedido( List<Pizza> pizzasPedidas, double total,String estado){
         System.out.println("-----------"+estado+"---------");
         for (int i = 0; i < pizzasPedidas.size(); i++) {
@@ -117,6 +123,7 @@ public class GestorPedidos {
         System.out.println("Total: $"+total);
     }
 
+    //Helpers
     public void pausar() {
         Scanner scan = new Scanner(System.in);
         System.out.println("\nPresiona ENTER para continuar...");

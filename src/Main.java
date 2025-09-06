@@ -7,8 +7,8 @@ public class Main {
 
         int opcion;
         do {
-            gestor.limpiar();
-            System.out.println("\n--- Pizzería Popones ---");
+
+            System.out.println("--- Pizzería Popones ---");
             System.out.println("1. Agregar pizza al menú");
             System.out.println("2. Mostrar menú");
             System.out.println("3. Tomar pedido");
@@ -24,6 +24,7 @@ public class Main {
                     break;
                 case 2:
                     gestor.mostrarMenu();
+
                     gestor.pausar();
                     break;
                 case 3:

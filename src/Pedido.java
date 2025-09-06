@@ -25,16 +25,18 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "Pedido\n" +
+        return "\033[0;1m Pedido \033[0;0m \n" +
                 "-----------------------------\n"+
                 cliente.toString() +
                 "-----------------------------\n"+
-                "*Pizzas:* " + pizzas +"\n"
+                "\033[0;1m Pizzas:\033[0;0m \n" + pizzas +"\n"
                 +"-------------------------\n"+
-                "*Total:* $" + total + "\n"+
+                "\033[0;1m Total:\033[0;0m $" + total + "\n"+
                 "-----------------------------\n"+
-                "*Fecha:* " + fecha + '\n' +
+                "\033[0;1m Fecha:\033[0;0m" + fecha + '\n' +
                 "-----------------------------\n"+
-                "*Estado:* " + estado + '\n';
+                "\033[0;1m Estado:\033[0;0m " + estado + '\n';
     }
+
+
 }
