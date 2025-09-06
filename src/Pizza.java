@@ -2,20 +2,22 @@ import java.util.List;
 
 public class Pizza {
     private String nombre;
-    private String tamaño;
+    private String tamanio;
     private double precio;
     private List<String> ingredientes;
 
     public Pizza(String nombre, String tamaño, double precio, List<String> ingredientes) {
         this.nombre = nombre;
-        this.tamaño = tamaño;
+        this.tamanio = tamaño;
         this.precio = precio;
         this.ingredientes = ingredientes;
     }
 
     @Override
     public String toString() {
-        return nombre + " (" + tamaño + ") - $" + precio + " | Ingredientes: " + ingredientes;
+        return  nombre + " (" + tamanio + ")\n"+
+                "$" + precio + "\n" +
+                ingredientes+"\n";
     }
 
     public String getNombre() {
@@ -27,11 +29,11 @@ public class Pizza {
     }
 
     public String getTamaño() {
-        return tamaño;
+        return tamanio;
     }
 
     public void setTamaño(String tamaño) {
-        this.tamaño = tamaño;
+        this.tamanio = tamaño;
     }
 
     public double getPrecio() {

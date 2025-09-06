@@ -19,6 +19,7 @@ public class GestorPedidos {
 
     // Metodo para agregar pizza desde consola
     public void agregarPizzaDesdeConsola(Scanner scanner) {
+        limpiar();
         System.out.print("Nombre de la pizza: ");
         String nombre = scanner.nextLine();
 
@@ -40,19 +41,28 @@ public class GestorPedidos {
         Pizza nuevaPizza = new Pizza(nombre, tamaño, precio, ingredientes);
         menu.add(nuevaPizza);
         System.out.println("✅ Pizza agregada al menú: " + nuevaPizza);
+        pausar();
     }
+
     public void registrarPedido(Pedido p) {  }
     public void guardarPedidosEnArchivo() {  }
-    public void mostrarHistorial() {  }
+    public void mostrarHistorial() {
+        for (int i = 0; i < this.pedidos.size(); i++) {
+            System.out.println((i + 1) + ". " + this.pedidos.get(i));
+        }
+    }
 
     public void mostrarMenu() {
+        limpiar();
         for (int i = 0; i < menu.size(); i++) {
             System.out.println((i + 1) + ". " + menu.get(i));
         }
 
+
     }
 
     public void tomarPedidoDesdeConsola(Scanner scanner) {
+        limpiar();
         String nombre;
         String telefono;
         List<Pizza> pizzasPedidas;
@@ -67,34 +77,55 @@ public class GestorPedidos {
         Cliente cliente = new Cliente(nombre,telefono);
         pizzasPedidas = new ArrayList<>();
 
-        System.out.println("A continuacion mostraremos el menu");
+        System.out.println("A continuacion mostraremos el menu, cua");
 
         while(continuarPedido){
+
             mostrarMenu();
-            System.out.println("Selecciona el numero de pizza");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("Selecciona cual pizza (1,2..)");
             int eleccion = scanner.nextInt()-1;
             pizzasPedidas.add(menu.get(eleccion));
             total = total + menu.get(eleccion).getPrecio();
-
-            System.out.println("Agregar otra pizza? si/no?");
-            String rta = scanner.next();
-            if(rta.equalsIgnoreCase("no")){
+            limpiar();
+            verPedido(pizzasPedidas,total,"Pedido Parcial");
+            System.out.println("---------------------------------------------------------");
+            System.out.println("Seleccione como continuar");
+            System.out.println("1.Cerrar Pedido\n2.Agregar Pizza\n");
+            int rta = scanner.nextInt();
+            if(rta == 1 ){
                 continuarPedido=false;
+                System.out.println("---------------------------------------------------------");
             }
-
-
         }
-        System.out.println("***************************************************************************");
-        System.out.println("Tu pedido:");
-        System.out.println("---------------------------------------------------------------------------");
-        for (int i = 0; i < pizzasPedidas.size(); i++) {
-            System.out.println((i + 1) + ". " + pizzasPedidas.get(i));
-        }
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("Importe total: $"+total);
-        System.out.println("****************************************************************************");
+        limpiar();
+        Pedido pedido = new Pedido(cliente,pizzasPedidas,total);
+        this.pedidos.add(pedido);
+        System.out.println(pedido);
 
+        pausar();
 
 
     }
+
+    public void verPedido( List<Pizza> pizzasPedidas, double total,String estado){
+        System.out.println("-----------"+estado+"---------");
+        for (int i = 0; i < pizzasPedidas.size(); i++) {
+            System.out.println((i + 1) + ". " + pizzasPedidas.get(i));
+        }
+        System.out.println("------------------------------");
+        System.out.println("Total: $"+total);
+    }
+
+    public void pausar() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("\nPresiona ENTER para continuar...");
+        scan.nextLine();
+    }
+    public void limpiar(){
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+    }
+
 }

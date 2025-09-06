@@ -8,4 +8,12 @@ public class Cliente {
         this.nombre = nombre;
         this.telefono = telefono;
     }
+
+    @Override
+    public String toString() {
+        return "Cliente\n" +
+                "Nombre: " + nombre + '\n' +
+                "Telefono: " + telefono + '\n'
+                ;
+    }
 }
