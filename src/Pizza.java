@@ -1,14 +1,17 @@
 import java.util.List;
 
+
 public class Pizza {
+    private int id;
     private String nombre;
     private String tamanio;
     private double precio;
     private List<String> ingredientes;
 
-    public Pizza(String nombre, String tamaño, double precio, List<String> ingredientes) {
+    public Pizza(int id,String nombre, String tamanio, double precio, List<String> ingredientes) {
+        this.id = id;
         this.nombre = nombre;
-        this.tamanio = tamaño;
+        this.tamanio = tamanio;
         this.precio = precio;
         this.ingredientes = ingredientes;
     }
@@ -32,6 +35,10 @@ public class Pizza {
         return tamanio;
     }
 
+    public String getTamanio() {
+        return tamanio;
+    }
+
     public void setTamaño(String tamaño) {
         this.tamanio = tamaño;
     }
@@ -51,4 +58,5 @@ public class Pizza {
     public void setIngredientes(List<String> ingredientes) {
         this.ingredientes = ingredientes;
     }
+
 }

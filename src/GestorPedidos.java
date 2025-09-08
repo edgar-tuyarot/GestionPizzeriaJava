@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -68,20 +69,57 @@ public class GestorPedidos {
     //Carga un pedido
     public void tomarPedidoDesdeConsola(Scanner scanner) {
         limpiar();
-        String nombre, telefono,direccion;
+        ClienteDAO dao = new ClienteDAO();
+        String nombre = "", telefono = "",direccion = "";
+        int id = 0;
+
+        System.out.println("Es cliente nuevo? S/N");
+        String rta_cliente = scanner.nextLine();
+
+        if(rta_cliente.equalsIgnoreCase("n")){
+
+            try {
+                for (Cliente c : dao.listar()) {
+                    System.out.println(c.getId() + " - " + c.getNombre() + " - " + c.getTelefono());
+                }
+
+                System.out.println("Seleccione el numero de cliente.");
+                int clienteSeleccionado = scanner.nextInt();
+                for (Cliente c : dao.listar()) {
+                    if(c.getId() == clienteSeleccionado){
+                        nombre = c.getNombre();
+                        direccion = c.getDireccion();
+                        telefono = c.getTelefono();
+                        id = c.getId();
+                    }
+                    System.out.println(c);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+
+            System.out.println("Nombre del cliente");
+            nombre = scanner.nextLine();
+            System.out.println("Telefono");
+            telefono = scanner.nextLine();
+            System.out.println("Direccion");
+            direccion = scanner.nextLine();
+            try {
+                Cliente cliente = dao.insertar(new Cliente(0,nombre,telefono,direccion));
+                id = cliente.getId();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         List<Pizza> pizzasPedidas;
         double total = 0;
         boolean continuarPedido = true;
 
-        System.out.println("Nombre del cliente");
-        nombre = scanner.nextLine();
-        System.out.println("Telefono");
-        telefono = scanner.nextLine();
-        System.out.println("Direccion");
-        direccion = scanner.nextLine();
-
-
-        Cliente cliente = new Cliente(nombre,telefono,direccion);
+        Cliente cliente = new Cliente(id,nombre,telefono,direccion);
         pizzasPedidas = new ArrayList<>();
 
         System.out.println("A continuacion mostraremos el menu");
@@ -100,7 +138,7 @@ public class GestorPedidos {
             System.out.println("1.Agregar\n2.Cerrar Pedido\n");
             int rta = scanner.nextInt();
             if(rta == 2 ){
-                continuarPedido=false;
+                continuarPedido = false;
                 System.out.println("---------------------------------------------------------");
             }
         }

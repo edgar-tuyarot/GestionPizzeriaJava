@@ -1,3 +1,5 @@
+import com.j256.ormlite.dao.Dao;
+
 import java.sql.ResultSet;
 import java.util.Scanner;
 import java.sql.Connection;
@@ -8,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         GestorPedidos gestor = new GestorPedidos();
-        Connection conn = SQLiteConexion.conectar();
+
         int opcion;
         do {
 
