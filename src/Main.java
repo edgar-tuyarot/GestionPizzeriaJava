@@ -1,10 +1,14 @@
+import java.sql.ResultSet;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         GestorPedidos gestor = new GestorPedidos();
-
+        Connection conn = SQLiteConexion.conectar();
         int opcion;
         do {
 
