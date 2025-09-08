@@ -9,8 +9,7 @@ public class PizzaDAO {
         String sql = "INSERT INTO pizzas(nombre, ingredientes, precio, tamanio) VALUES(?, ?, ?, ?)";
         try (Connection conn = SQLiteConexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, pizza.getNombre());
-            String ingredientesTexto = String.join(",", pizza.getIngredientes());
-            ps.setString(2, ingredientesTexto);
+            ps.setString(2, pizza.getIngredientes());
             ps.setDouble(3, pizza.getPrecio());
             ps.setString(4, pizza.getTamanio());
             ps.executeUpdate();
@@ -31,7 +30,7 @@ public class PizzaDAO {
                                         result.getString("nombre"),
                                         result.getString("tamanio"),
                                         result.getDouble("precio"),
-                                        Arrays.asList( result.getString("ingredientes").split(","))
+                                        result.getString("ingredientes")
 
                                 );
 
@@ -51,7 +50,7 @@ public class PizzaDAO {
 
     public List<Pizza> listar() throws SQLException {
         List<Pizza> pizzas = new ArrayList<>();
-        String sql = "SELECT * FROM clientes";
+        String sql = "SELECT * FROM pizzas";
         try (Connection conn = SQLiteConexion.conectar();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -61,7 +60,7 @@ public class PizzaDAO {
                         rs.getString("nombre"),
                         rs.getString("tamanio"),
                         rs.getDouble("precio"),
-                        Arrays.asList( rs.getString("ingredientes").split(","))
+                        rs.getString("ingredientes")
 
                 ));
 

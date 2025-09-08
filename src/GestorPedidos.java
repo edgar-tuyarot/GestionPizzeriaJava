@@ -12,8 +12,17 @@ public class GestorPedidos {
         this.menu = new ArrayList<>();
         this.pedidos = new ArrayList<>();
         //Agregamos unas pizzas al menu
-        menu.add(new Pizza("Napolitana", "Grande", 9000, List.of("Muzza", "Tomate", "Pesto")));
-        menu.add(new Pizza("Muzzarella", "Grande", 7500, List.of("Muzza", "oregano", "oliva")));
+        PizzaDAO pizza = new PizzaDAO();
+        try {
+            for (Pizza p : pizza.listar()) {
+                menu.add(p);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
 
     }
 
@@ -21,11 +30,15 @@ public class GestorPedidos {
     // Metodo para agregar pizza desde consola
     public void agregarPizzaDesdeConsola(Scanner scanner) {
         limpiar();
+        PizzaDAO pizza = new PizzaDAO();
+        String ingredientesString = "";
+        int id = 0;
+
         System.out.print("Nombre de la pizza: ");
         String nombre = scanner.nextLine();
 
         System.out.print("Tamaño (chica/mediana/grande): ");
-        String tamaño = scanner.nextLine();
+        String tamanio = scanner.nextLine();
 
         System.out.print("Precio: ");
         double precio = scanner.nextDouble();
@@ -35,13 +48,22 @@ public class GestorPedidos {
         System.out.println("Ingrese ingredientes (escriba 'fin' para terminar):");
         while (true) {
             String ing = scanner.nextLine();
-            if (ing.equalsIgnoreCase("fin")) break;
+            if (ing.equalsIgnoreCase("fin")){
+                ingredientesString = String.join(",", ingredientes);
+                break;
+            }
             ingredientes.add(ing);
         }
 
-        Pizza nuevaPizza = new Pizza(nombre, tamaño, precio, ingredientes);
-        menu.add(nuevaPizza);
-        System.out.println("✅ Pizza agregada al menú: " + nuevaPizza);
+        try {
+            Pizza nuevaPizza = pizza.insertar(new Pizza(id,nombre, tamanio, precio, ingredientesString));
+            id = nuevaPizza.getId();
+            menu.add(nuevaPizza);
+            System.out.println("✅ Pizza agregada al menú: " + nuevaPizza);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         pausar();
         limpiar();
     }

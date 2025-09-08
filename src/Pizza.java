@@ -6,9 +6,9 @@ public class Pizza {
     private String nombre;
     private String tamanio;
     private double precio;
-    private List<String> ingredientes;
+    private String ingredientes;
 
-    public Pizza(int id,String nombre, String tamanio, double precio, List<String> ingredientes) {
+    public Pizza(int id,String nombre, String tamanio, double precio, String ingredientes) {
         this.id = id;
         this.nombre = nombre;
         this.tamanio = tamanio;
@@ -25,6 +25,18 @@ public class Pizza {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTamanio(String tamanio) {
+        this.tamanio = tamanio;
     }
 
     public void setNombre(String nombre) {
@@ -51,11 +63,11 @@ public class Pizza {
         this.precio = precio;
     }
 
-    public List<String> getIngredientes() {
+    public String getIngredientes() {
         return ingredientes;
     }
 
-    public void setIngredientes(List<String> ingredientes) {
+    public void setIngredientes(String ingredientes) {
         this.ingredientes = ingredientes;
     }
 
