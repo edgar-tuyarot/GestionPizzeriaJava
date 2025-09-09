@@ -1,6 +1,9 @@
+package main.java.com.gestorpizzeria.dao;
+
+import main.java.com.gestorpizzeria.models.Pizza;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PizzaDAO {

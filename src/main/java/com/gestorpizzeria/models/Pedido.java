@@ -1,5 +1,5 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+package main.java.com.gestorpizzeria.models;
+
 import java.util.List;
 
 public class Pedido {
@@ -80,7 +80,7 @@ public class Pedido {
     @Override
     public String toString() {
         return  "-----------------------------\n"+
-                "\033[0;1m Pedido n°: \033[0;0m " + this.id +"\n"+
+                "\033[0;1m main.java.com.gestorpizzeria.models.Pedido n°: \033[0;0m " + this.id +"\n"+
                 "\033[0;1m Para: \033[0;0m"+ cliente.getNombre()+"\n"+
                 "\033[0;1m Direccion: \033[0;0m"+ cliente.getDireccion()+"\n"+
                 "\033[0;1m Telefono: \033[0;0m"+cliente.getTelefono()+"\n"+

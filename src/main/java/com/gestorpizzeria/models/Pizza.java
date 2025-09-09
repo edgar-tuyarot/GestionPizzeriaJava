@@ -1,4 +1,4 @@
-import java.util.List;
+package main.java.com.gestorpizzeria.models;
 
 
 public class Pizza {

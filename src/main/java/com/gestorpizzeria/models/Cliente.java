@@ -1,8 +1,4 @@
-import java.util.List;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
-
+package main.java.com.gestorpizzeria.models;
 
 
 public class Cliente {
@@ -21,7 +17,7 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "\033[0;1m Cliente:\033[0;0m " + id + "\n"+
+        return "\033[0;1m main.java.com.gestorpizzeria.models.Cliente:\033[0;0m " + id + "\n"+
                 "\033[0;1m Nombre:\033[0;0m " + nombre + '\n' +
                 "\033[0;1m Telefono:\033[0;0m " + telefono + '\n'+
                 "\033[0;1m Direccion:\033[0;0m "+direccion+"\n";

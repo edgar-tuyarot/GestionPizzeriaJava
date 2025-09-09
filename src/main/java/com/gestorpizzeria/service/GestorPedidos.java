@@ -1,9 +1,17 @@
+package main.java.com.gestorpizzeria.service;
+
+import main.java.com.gestorpizzeria.dao.ClienteDAO;
+import main.java.com.gestorpizzeria.dao.PedidoDAO;
+import main.java.com.gestorpizzeria.dao.PedidosPizzasDAO;
+import main.java.com.gestorpizzeria.dao.PizzaDAO;
+import main.java.com.gestorpizzeria.models.Cliente;
+import main.java.com.gestorpizzeria.models.Pedido;
+import main.java.com.gestorpizzeria.models.PedidosPizzas;
+import main.java.com.gestorpizzeria.models.Pizza;
+
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class GestorPedidos {
@@ -11,7 +19,7 @@ public class GestorPedidos {
     private List<Cliente>clientes;
     private List<Pedido> pedidos;
     private List<PedidosPizzas> pedidosPizzas;
-
+    private Helpers helper = new Helpers();
 
     public GestorPedidos() {
         this.menu = new ArrayList<>();
@@ -28,7 +36,7 @@ public class GestorPedidos {
             e.printStackTrace();
         }
         //Agregamos pizzas al menu desde BBDD
-        PedidosPizzasDao pedidosPizzasDao = new PedidosPizzasDao();
+        PedidosPizzasDAO pedidosPizzasDao = new PedidosPizzasDAO();
         try {
             for (PedidosPizzas p : pedidosPizzasDao.listar()) {
                 pedidosPizzas.add(p);
@@ -46,7 +54,7 @@ public class GestorPedidos {
             e.printStackTrace();
         }
         //Cargamos desde bbdd los pedidos
-        PedidoDao pedidoDao = new PedidoDao();
+        PedidoDAO pedidoDao = new PedidoDAO();
         try {
             for (Pedido p : pedidoDao.listar()) {
                 List<Pizza> pizzas = new ArrayList<>();
@@ -81,7 +89,7 @@ public class GestorPedidos {
 
     // Metodo para agregar pizza desde consola
     public void agregarPizzaDesdeConsola(Scanner scanner) {
-        limpiar();
+        helper.limpiar();
         PizzaDAO pizza = new PizzaDAO();
         String ingredientesString = "";
         int id = 0;
@@ -111,29 +119,43 @@ public class GestorPedidos {
             Pizza nuevaPizza = pizza.insertar(new Pizza(id,nombre, tamanio, precio, ingredientesString));
             id = nuevaPizza.getId();
             menu.add(nuevaPizza);
-            System.out.println("✅ Pizza agregada al menú: " + nuevaPizza);
+            System.out.println("✅ main.java.com.gestorpizzeria.models.Pizza agregada al menú: " + nuevaPizza);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        pausar();
-        limpiar();
+        helper.pausar();
+        helper.limpiar();
     }
 
     public void registrarPedido(Pedido p) {  }
 
     public void guardarPedidosEnArchivo() {  }
-    //Mostrar todos los pedidos
-    public void mostrarHistorial() {
-        limpiar();
+    //Mostrar todos los pedidos Pendientes
+    public void pedidosPendientes() {
+        helper.limpiar();
         for (int i = 0; i < this.pedidos.size(); i++) {
-            System.out.println(this.pedidos.get(i));
+            if(this.pedidos.get(i).getEstado().equalsIgnoreCase("Pendiente")){
+                System.out.println(this.pedidos.get(i));
+            }
+
         }
-        pausar();
+        helper.pausar();
+    }
+    //Mostrar todos los pedidos
+    public void pedidosCompletos() {
+        helper.limpiar();
+        for (int i = 0; i < this.pedidos.size(); i++) {
+            if(this.pedidos.get(i).getEstado().equalsIgnoreCase("Completo")){
+                System.out.println(this.pedidos.get(i));
+            }
+
+        }
+        helper.pausar();
     }
     //Muestra el menu de pizzas
     public void mostrarMenu() {
-        limpiar();
+        helper.limpiar();
         for (int i = 0; i < menu.size(); i++) {
             System.out.println((i + 1) + ". " + menu.get(i));
         }
@@ -142,7 +164,7 @@ public class GestorPedidos {
     }
     //Carga un pedido
     public void tomarPedidoDesdeConsola(Scanner scanner) {
-        limpiar();
+        helper.limpiar();
         //Definicion de variables
 
         int idPedido = 0;
@@ -156,8 +178,8 @@ public class GestorPedidos {
 
 
         ClienteDAO clienteDao = new ClienteDAO();
-        PedidoDao pedidoDao = new PedidoDao();
-        PedidosPizzasDao pedidosPizzasDao = new PedidosPizzasDao();
+        PedidoDAO pedidoDao = new PedidoDAO();
+        PedidosPizzasDAO pedidosPizzasDao = new PedidosPizzasDAO();
 
         //Primero Definimos cliente, desde BBDD o Cargamos uno.
 
@@ -208,8 +230,8 @@ public class GestorPedidos {
         //Instanciamos el cliente
         Cliente cliente = new Cliente(idCliente,nombre,telefono,direccion);
 
-        //Luego Creamos el Pedido.
-        Pedido pedido = new Pedido(0,cliente.getId(),fechaFormateada(),"Pendiente",total);
+        //Luego Creamos el main.java.com.gestorpizzeria.models.Pedido.
+        Pedido pedido = new Pedido(0,cliente.getId(),helper.fechaFormateada(),"Pendiente",total);
 
         try {
             //Un vez cargado el pedido de la bbdd definimos el id de ese pedido.
@@ -240,20 +262,20 @@ public class GestorPedidos {
                 e.printStackTrace();
             }
 
-            verPedido(pizzasPedidas,total,"Pedido Parcial");
+            verPedido(pizzasPedidas,total,"main.java.com.gestorpizzeria.models.Pedido Parcial");
             System.out.println("---------------------------------------------------------");
             System.out.println("Seleccione como continuar");
-            System.out.println("1.Agregar\n2.Cerrar Pedido");
+            System.out.println("1.Agregar\n2.Cerrar main.java.com.gestorpizzeria.models.Pedido");
             int rta = scanner.nextInt();
             if(rta == 2 ){
                 continuarPedido = false;
                 System.out.println("---------------------------------------------------------");
-                verPedido(pizzasPedidas,total,"Pedido Cerrado");
-                pausar();
+                verPedido(pizzasPedidas,total,"main.java.com.gestorpizzeria.models.Pedido Cerrado");
+                helper.pausar();
             }
 
         }
-        limpiar();
+        helper.limpiar();
     }
     //Metodo para ver el pedido
     public void verPedido(List<Pizza> pizzasPedidas, double total,String estado){
@@ -265,23 +287,6 @@ public class GestorPedidos {
         System.out.println("Total: $"+total);
     }
 
-    //Helpers
-    public void pausar() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("\nPresiona ENTER para continuar...");
-        scan.nextLine();
-    }
-    public void limpiar(){
-        for (int i = 0; i < 50; i++) {
-            System.out.println();
-        }
-    }
-    public String fechaFormateada(){
-        LocalDateTime ahora = LocalDateTime.now();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String fechaFormateada = ahora.format(formato);
 
-        return fechaFormateada;
-    }
 
 }

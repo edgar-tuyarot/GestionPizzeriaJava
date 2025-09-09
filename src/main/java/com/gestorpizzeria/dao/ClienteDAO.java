@@ -1,3 +1,7 @@
+package main.java.com.gestorpizzeria.dao;
+
+import main.java.com.gestorpizzeria.models.Cliente;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

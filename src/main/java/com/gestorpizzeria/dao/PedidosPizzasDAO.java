@@ -1,9 +1,12 @@
+package main.java.com.gestorpizzeria.dao;
+
+import main.java.com.gestorpizzeria.models.PedidosPizzas;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class PedidosPizzasDao {
+public class PedidosPizzasDAO {
 
     public PedidosPizzas insertar(PedidosPizzas pedidoPizzas) throws SQLException {
         String sql = "INSERT INTO pedidos_pizzas(pedido_id, pizza_id,cantidad) VALUES(?, ?, ?)";

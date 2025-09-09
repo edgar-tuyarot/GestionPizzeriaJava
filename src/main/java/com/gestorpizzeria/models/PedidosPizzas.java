@@ -1,3 +1,5 @@
+package main.java.com.gestorpizzeria.models;
+
 public class PedidosPizzas {
     private int id,pedido_id,pizza_id,cantidad;
 
