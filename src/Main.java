@@ -19,7 +19,7 @@ public class Main {
             System.out.println("2. Mostrar menú");
             System.out.println("3. Tomar pedido");
             System.out.println("4. Ver historial de pedidos");
-            System.out.println("5. Guardar y salir");
+            System.out.println("5.Salir");
             System.out.print("Elige una opción: ");
             opcion = scanner.nextInt();
             scanner.nextLine(); // limpiar buffer
@@ -30,7 +30,6 @@ public class Main {
                     break;
                 case 2:
                     gestor.mostrarMenu();
-
                     gestor.pausar();
                     break;
                 case 3:
@@ -40,7 +39,6 @@ public class Main {
                     gestor.mostrarHistorial();
                     break;
                 case 5:
-                    gestor.guardarPedidosEnArchivo();
                     System.out.println("¡Hasta luego!");
                     break;
                 default:

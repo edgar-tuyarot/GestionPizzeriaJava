@@ -1,4 +1,6 @@
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -6,16 +8,66 @@ import java.util.Scanner;
 
 public class GestorPedidos {
     private List<Pizza> menu;
+    private List<Cliente>clientes;
     private List<Pedido> pedidos;
+    private List<PedidosPizzas> pedidosPizzas;
+
 
     public GestorPedidos() {
         this.menu = new ArrayList<>();
         this.pedidos = new ArrayList<>();
-        //Agregamos unas pizzas al menu
+        this.clientes = new ArrayList<>();
+        this.pedidosPizzas = new ArrayList<>();
+        //Agregamos pizzas al menu desde BBDD
         PizzaDAO pizza = new PizzaDAO();
         try {
             for (Pizza p : pizza.listar()) {
                 menu.add(p);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //Agregamos pizzas al menu desde BBDD
+        PedidosPizzasDao pedidosPizzasDao = new PedidosPizzasDao();
+        try {
+            for (PedidosPizzas p : pedidosPizzasDao.listar()) {
+                pedidosPizzas.add(p);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //Cargamos desde bbdd los Clientes
+        ClienteDAO clienteDAO = new ClienteDAO();
+        try {
+            for (Cliente c : clienteDAO.listar()) {
+                clientes.add(c);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //Cargamos desde bbdd los pedidos
+        PedidoDao pedidoDao = new PedidoDao();
+        try {
+            for (Pedido p : pedidoDao.listar()) {
+                List<Pizza> pizzas = new ArrayList<>();
+
+                for (Cliente c : clientes){
+                    if(c.getId() == p.getCliente_id()){
+                        p.setCliente(c);
+                        pedidos.add(p);
+                    }
+                }
+                for(PedidosPizzas pp : pedidosPizzas){
+                    if(pp.getPedido_id()==p.getId()){
+                        for (Pizza piz : menu){
+                            if(pp.getPizza_id() == piz.getId()){
+                                pizzas.add(piz);
+                            }
+                        }
+                    }
+                }
+                p.setPizzas(pizzas);
+
             }
         }catch (SQLException e) {
             e.printStackTrace();
@@ -75,7 +127,7 @@ public class GestorPedidos {
     public void mostrarHistorial() {
         limpiar();
         for (int i = 0; i < this.pedidos.size(); i++) {
-            System.out.println((i + 1) + ". " + this.pedidos.get(i));
+            System.out.println(this.pedidos.get(i));
         }
         pausar();
     }
@@ -97,6 +149,10 @@ public class GestorPedidos {
         int idPedidoPizza = 0;
         int idCliente = 0;
 
+        List<Pizza> pizzasPedidas;
+        double total = 0;
+        boolean continuarPedido = true;
+        pizzasPedidas = new ArrayList<>();
 
 
         ClienteDAO clienteDao = new ClienteDAO();
@@ -113,25 +169,23 @@ public class GestorPedidos {
         String rta_cliente = scanner.nextLine();
 
         if(rta_cliente.equalsIgnoreCase("n")){
-            //Mostramos todos los clientes desde BBDD
-            try {
-                for (Cliente c : clienteDao.listar()) {
-                    System.out.println(c.getId() + " - " + c.getNombre() + " - " + c.getTelefono());
+            //Mostramos todos los clientes
+            for (Cliente c : clientes) {
+                System.out.println(c.getId() + " - " + c.getNombre() + " - " + c.getTelefono());
+            }
+            //Definimos los atributos del cliente a instanciar con los datos de la BBDD
+            System.out.println("Seleccione el numero de cliente");
+            int clienteSeleccionado = scanner.nextInt();
+            for (Cliente c : clientes) {
+                if(c.getId() == clienteSeleccionado){
+                    nombre = c.getNombre();
+                    direccion = c.getDireccion();
+                    telefono = c.getTelefono();
+                    idCliente = c.getId();
+                    System.out.println(c.getId());
+                    break;
                 }
-                //Definimos los atributos del cliente a instanciar con los datos de la BBDD
-                System.out.println("Seleccione el numero de cliente.");
-                int clienteSeleccionado = scanner.nextInt();
-                for (Cliente c : clienteDao.listar()) {
-                    if(c.getId() == clienteSeleccionado){
-                        nombre = c.getNombre();
-                        direccion = c.getDireccion();
-                        telefono = c.getTelefono();
-                        idCliente = c.getId();
-                    }
-                    System.out.println(c);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+
             }
 
         }else{
@@ -143,8 +197,9 @@ public class GestorPedidos {
             System.out.println("Direccion");
             direccion = scanner.nextLine();
             try {
-                Cliente cliente = clienteDao.insertar(new Cliente(0,nombre,telefono,direccion));
-                idCliente = cliente.getId();
+                Cliente clienteNuevo = clienteDao.insertar(new Cliente(0,nombre,telefono,direccion));
+                idCliente = clienteNuevo.getId();
+                clientes.add(clienteNuevo);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -154,20 +209,16 @@ public class GestorPedidos {
         Cliente cliente = new Cliente(idCliente,nombre,telefono,direccion);
 
         //Luego Creamos el Pedido.
-        Pedido pedido = new Pedido(0,idCliente,"Pendiente",0);
+        Pedido pedido = new Pedido(0,cliente.getId(),fechaFormateada(),"Pendiente",total);
+
         try {
             //Un vez cargado el pedido de la bbdd definimos el id de ese pedido.
             idPedido = pedidoDao.insertar(pedido).getId();
+            pedido.setId(idPedido);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
-
-        List<Pizza> pizzasPedidas;
-        double total = 0;
-        boolean continuarPedido = true;
-        pizzasPedidas = new ArrayList<>();
 
         System.out.println("A continuacion mostraremos el menu");
 
@@ -179,11 +230,12 @@ public class GestorPedidos {
             pizzasPedidas.add(menu.get(eleccion));
 
             try{
-                idPedido = pedidoDao.insertar(pedido).getId();
+
                 PedidosPizzas pedidosPizzas = new PedidosPizzas(0,pedido.getId(),menu.get(eleccion).getId(),1);
                 idPedidoPizza = pedidosPizzasDao.insertar(pedidosPizzas).getId();
                 total = total + menu.get(eleccion).getPrecio();
                 pedido.setTotal(total);
+                pedidoDao.actualizar(pedido);
             }catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -191,21 +243,17 @@ public class GestorPedidos {
             verPedido(pizzasPedidas,total,"Pedido Parcial");
             System.out.println("---------------------------------------------------------");
             System.out.println("Seleccione como continuar");
-            System.out.println("1.Agregar\n2.Cerrar Pedido\n");
+            System.out.println("1.Agregar\n2.Cerrar Pedido");
             int rta = scanner.nextInt();
             if(rta == 2 ){
                 continuarPedido = false;
                 System.out.println("---------------------------------------------------------");
+                verPedido(pizzasPedidas,total,"Pedido Cerrado");
+                pausar();
             }
+
         }
         limpiar();
-
-
-
-
-        pausar();
-
-
     }
     //Metodo para ver el pedido
     public void verPedido(List<Pizza> pizzasPedidas, double total,String estado){
@@ -227,6 +275,13 @@ public class GestorPedidos {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
+    }
+    public String fechaFormateada(){
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String fechaFormateada = ahora.format(formato);
+
+        return fechaFormateada;
     }
 
 }

@@ -8,7 +8,7 @@ public class PedidoDao {
     public Pedido insertar(Pedido pedido) throws SQLException {
         String sql = "INSERT INTO pedidos(cliente_id, fecha, estado, total) VALUES(?, ?, ?, ?)";
         try (Connection conn = SQLiteConexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, pedido.getId());
+            ps.setInt(1, pedido.getCliente_id());
             ps.setString(2, pedido.getFecha());
             ps.setString(3, pedido.getEstado());
             ps.setDouble(4, pedido.getTotal());
@@ -28,8 +28,10 @@ public class PedidoDao {
                                 Pedido pedidoAgregado = new Pedido(
                                         result.getInt("id"),
                                         result.getInt("cliente_id"),
+                                        result.getString("fecha"),
                                         result.getString("estado"),
-                                        result.getDouble("cantidad")
+                                        result.getDouble("total")
+
 
                                 );
 
@@ -47,24 +49,41 @@ public class PedidoDao {
         return null;
     }
 
-    public List<Pizza> listar() throws SQLException {
-        List<Pizza> pizzas = new ArrayList<>();
-        String sql = "SELECT * FROM pizzas";
+    public List<Pedido> listar() throws SQLException {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM pedidos";
         try (Connection conn = SQLiteConexion.conectar();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                pizzas.add(new Pizza(
+                pedidos.add(new Pedido(
                         rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("tamanio"),
-                        rs.getDouble("precio"),
-                        rs.getString("ingredientes")
+                        rs.getInt("cliente_id"),
+                        rs.getString("fecha"),
+                        rs.getString("estado"),
+                        rs.getDouble("total")
+
 
                 ));
 
             }
         }
-        return pizzas;
+        return pedidos;
+    }
+
+    public boolean actualizar(Pedido pedido)throws SQLException {
+        String sql = "UPDATE pedidos SET total = ? WHERE id = ?";
+
+        try (Connection conn = SQLiteConexion.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            //Valor del total el 1, indica que valor reemplaza en la consulta SQL
+            ps.setDouble(1, pedido.getTotal());
+            ps.setInt(2, pedido.getId()); // ID del pedido a actualizar
+
+            int filasAfectadas = ps.executeUpdate();
+            return filasAfectadas > 0;
+        }
+
+
     }
 }
