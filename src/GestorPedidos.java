@@ -91,28 +91,42 @@ public class GestorPedidos {
     //Carga un pedido
     public void tomarPedidoDesdeConsola(Scanner scanner) {
         limpiar();
-        ClienteDAO dao = new ClienteDAO();
-        String nombre = "", telefono = "",direccion = "";
-        int id = 0;
+        //Definicion de variables
 
+        int idPedido = 0;
+        int idPedidoPizza = 0;
+        int idCliente = 0;
+
+
+
+        ClienteDAO clienteDao = new ClienteDAO();
+        PedidoDao pedidoDao = new PedidoDao();
+        PedidosPizzasDao pedidosPizzasDao = new PedidosPizzasDao();
+
+        //Primero Definimos cliente, desde BBDD o Cargamos uno.
+
+        String nombre = "", telefono = "",direccion = "";
+
+
+        //Preguntamos si mostramos clientes desde BBDD o Cargamos un nuevo
         System.out.println("Es cliente nuevo? S/N");
         String rta_cliente = scanner.nextLine();
 
         if(rta_cliente.equalsIgnoreCase("n")){
-
+            //Mostramos todos los clientes desde BBDD
             try {
-                for (Cliente c : dao.listar()) {
+                for (Cliente c : clienteDao.listar()) {
                     System.out.println(c.getId() + " - " + c.getNombre() + " - " + c.getTelefono());
                 }
-
+                //Definimos los atributos del cliente a instanciar con los datos de la BBDD
                 System.out.println("Seleccione el numero de cliente.");
                 int clienteSeleccionado = scanner.nextInt();
-                for (Cliente c : dao.listar()) {
+                for (Cliente c : clienteDao.listar()) {
                     if(c.getId() == clienteSeleccionado){
                         nombre = c.getNombre();
                         direccion = c.getDireccion();
                         telefono = c.getTelefono();
-                        id = c.getId();
+                        idCliente = c.getId();
                     }
                     System.out.println(c);
                 }
@@ -121,7 +135,7 @@ public class GestorPedidos {
             }
 
         }else{
-
+            //Creamos un cliente nuevo
             System.out.println("Nombre del cliente");
             nombre = scanner.nextLine();
             System.out.println("Telefono");
@@ -129,19 +143,30 @@ public class GestorPedidos {
             System.out.println("Direccion");
             direccion = scanner.nextLine();
             try {
-                Cliente cliente = dao.insertar(new Cliente(0,nombre,telefono,direccion));
-                id = cliente.getId();
+                Cliente cliente = clienteDao.insertar(new Cliente(0,nombre,telefono,direccion));
+                idCliente = cliente.getId();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
+        //Instanciamos el cliente
+        Cliente cliente = new Cliente(idCliente,nombre,telefono,direccion);
+
+        //Luego Creamos el Pedido.
+        Pedido pedido = new Pedido(0,idCliente,"Pendiente",0);
+        try {
+            //Un vez cargado el pedido de la bbdd definimos el id de ese pedido.
+            idPedido = pedidoDao.insertar(pedido).getId();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
 
         List<Pizza> pizzasPedidas;
         double total = 0;
         boolean continuarPedido = true;
-
-        Cliente cliente = new Cliente(id,nombre,telefono,direccion);
         pizzasPedidas = new ArrayList<>();
 
         System.out.println("A continuacion mostraremos el menu");
@@ -152,8 +177,17 @@ public class GestorPedidos {
             System.out.println("Seleccionar opcion");
             int eleccion = scanner.nextInt()-1;
             pizzasPedidas.add(menu.get(eleccion));
-            total = total + menu.get(eleccion).getPrecio();
-            limpiar();
+
+            try{
+                idPedido = pedidoDao.insertar(pedido).getId();
+                PedidosPizzas pedidosPizzas = new PedidosPizzas(0,pedido.getId(),menu.get(eleccion).getId(),1);
+                idPedidoPizza = pedidosPizzasDao.insertar(pedidosPizzas).getId();
+                total = total + menu.get(eleccion).getPrecio();
+                pedido.setTotal(total);
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             verPedido(pizzasPedidas,total,"Pedido Parcial");
             System.out.println("---------------------------------------------------------");
             System.out.println("Seleccione como continuar");
@@ -165,16 +199,16 @@ public class GestorPedidos {
             }
         }
         limpiar();
-        Pedido pedido = new Pedido(cliente,pizzasPedidas,total);
-        this.pedidos.add(pedido);
-        System.out.println(pedido);
+
+
+
 
         pausar();
 
 
     }
     //Metodo para ver el pedido
-    public void verPedido( List<Pizza> pizzasPedidas, double total,String estado){
+    public void verPedido(List<Pizza> pizzasPedidas, double total,String estado){
         System.out.println("-----------"+estado+"---------");
         for (int i = 0; i < pizzasPedidas.size(); i++) {
             System.out.println((i + 1) + ". " + pizzasPedidas.get(i));

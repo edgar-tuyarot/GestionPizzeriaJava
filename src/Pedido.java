@@ -3,19 +3,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Pedido {
-    private Cliente cliente;
-    private List<Pizza> pizzas;
+    private int id;
+    private int cliente_id;
     private double total;
     private String fecha;
     private String estado;
 
-    public Pedido(Cliente cliente, List<Pizza> pizzas, double total ) {
-        this.cliente = cliente;
-        this.pizzas = pizzas;
+    public Pedido(int id,int cliente_id,String estado, double total ) {
+        this.id = id;
         this.total = total;
-
-
-
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String fechaFormateada = ahora.format(formato);
@@ -23,14 +19,44 @@ public class Pedido {
         this.estado = "Pendiente";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
         return "\033[0;1m Pedido \033[0;0m \n" +
                 "-----------------------------\n"+
-                cliente.toString() +
-                "-----------------------------\n"+
-                "\033[0;1m Pizzas:\033[0;0m \n" + pizzas +"\n"
-                +"-------------------------\n"+
                 "\033[0;1m Total:\033[0;0m $" + total + "\n"+
                 "-----------------------------\n"+
                 "\033[0;1m Fecha:\033[0;0m" + fecha + '\n' +
