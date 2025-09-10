@@ -22,19 +22,30 @@ Aplicación de consola desarrollada en Java para gestionar pedidos, clientes y p
 4. 	Ejecutá
    
 📚 Aprendizaje detrás del proyecto
-Este proyecto forma parte del proceso de formación en Java, aplicando conceptos como:
-• 	Programación orientada a objetos
-• 	Manejo de excepciones
-• 	Acceso a base de datos sin ORM
-• 	Modularidad y buenas prácticas
-• 	Documentación y publicación en GitHub
 
+Este proyecto forma parte del proceso de formación en Java, aplicando conceptos como:
+
+• 	Programación orientada a objetos
+
+• 	Manejo de excepciones
+
+• 	Acceso a base de datos sin ORM
+
+• 	Modularidad y buenas prácticas
+
+• 	Documentación y publicación en GitHub
+   
 💡 Próximas mejoras
-• 	Validaciones de entrada más robustas
+
 • 	Menú interactivo para pedidos
+
 • 	Exportación de datos
-• 	Integración con interfaz gráfica (JavaFX o Swing)
+
+• 	Migrar a Maven, con PostgrestSQL
+
 
 👨‍👩‍👧‍👧 Autor
+
 Edgar Tuyarot
-Apasionado por la tecnología, la programación y los proyectos familiares. Este sistema nace como parte de su emprendimiento de pizzería casera con horno de barro en Argentina.
+
+Apasionado por la tecnología y la programación.-
