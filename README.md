@@ -2,11 +2,17 @@
 Aplicación de consola desarrollada en Java para gestionar pedidos, clientes y productos de una pizzería familiar. Este proyecto combina aprendizaje técnico con un emprendimiento real, integrando programación, persistencia con SQLite y buenas prácticas de desarrollo.
 
 🚀 Características principales
+
 • 	Registro, edición y consulta de clientes, pizzas y pedidos
+
 • 	Persistencia de datos con SQLite
+
 • 	Estructura modular con clases DAO
+
 • 	Conversión automática de listas de ingredientes
+
 • 	Interfaz de consola clara y funcional
+
 • 	Código pensado para escalar y profesionalizar
 
 🛠️ Tecnologías utilizadas
